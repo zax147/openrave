@@ -1357,13 +1357,13 @@ public:
 
         /// \brief initializes the link with geometries from the extra geomeries in LinkInfo
         ///
-        /// \param name The name of the geometry group. If name is empty, will initialize the default geometries.
-        /// \throw If name does not exist in GetInfo()._mapExtraGeometries, then throw an exception.
+        /// \param groupid The id of the geometry group. If id is empty, will initialize the default geometries.
+        /// \throw If id does not exist in GetInfo()._mapExtraGeometries, then throw an exception.
         void SetGeometriesFromGroup(const std::string& groupid);
 
         /// \brief returns a const reference to the vector of geometries for a particular group
         ///
-        /// \param name The name of the geometry group.
+        /// \param groupid The id of the geometry group.
         /// \throw openrave_exception If the group does not exist, throws an exception.
         const std::vector<KinBody::GeometryInfoPtr>& GetGeometriesFromGroup(const std::string& groupid) const;
 

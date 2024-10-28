@@ -215,21 +215,10 @@ void KinBody::LinkInfo::SerializeJSON(rapidjson::Value &value, rapidjson::Docume
     if (_mapExtraGeometries.size() > 0) {
         rapidjson::Value extraGeometriesValue;
         extraGeometriesValue.SetArray();
+        extraGeometriesValue.Reserve(_mapExtraGeometries.size(), allocator);
         FOREACHC(im, _mapExtraGeometries) {
             rapidjson::Value extraGeometryValue;
-            extraGeometryValue.SetObject();
-            orjson::SetJsonValueByKey(extraGeometryValue, "id", im->second->_id, allocator);
-            orjson::SetJsonValueByKey(extraGeometryValue, "name", im->second->_name, allocator);
-            rapidjson::Value geometriesValue;
-            geometriesValue.SetArray();
-            FOREACHC(iv, im->second->_vgeometryinfos) {
-                if (!!(*iv)) {
-                    rapidjson::Value geometryValue;
-                    (*iv)->SerializeJSON(geometryValue, allocator, fUnitScale, options);
-                    geometriesValue.PushBack(geometryValue, allocator);
-                }
-            }
-            extraGeometryValue.AddMember("geometries", geometriesValue, allocator);
+            im->second->SerializeJSON(extraGeometryValue, allocator, fUnitScale, options);
             extraGeometriesValue.PushBack(extraGeometryValue, allocator);
         }
         value.AddMember("extraGeometries", extraGeometriesValue, allocator);
@@ -858,10 +847,10 @@ void KinBody::Link::_SetGroupGeometriesNoPostprocess(const std::string& groupid,
             throw OPENRAVE_EXCEPTION_FORMAT("GeometryInfo index %d is invalid for body %s", igeominfo % GetParent()->GetName(), ORE_InvalidArguments);
         }
     }
-    KinBody::ExtraGeometryInfoPtr new_extrageom( new KinBody::ExtraGeometryInfo() );
-    new_extrageom->_id = groupid;
-    new_extrageom->_name = groupid;
-    std::map<std::string, KinBody::ExtraGeometryInfoPtr>::iterator it = _info._mapExtraGeometries.insert(make_pair(groupid, new_extrageom)).first;
+    KinBody::ExtraGeometryInfoPtr newExtraGeom( new KinBody::ExtraGeometryInfo() );
+    newExtraGeom->_id = groupid;
+    newExtraGeom->_name = groupid;
+    std::map<std::string, KinBody::ExtraGeometryInfoPtr>::iterator it = _info._mapExtraGeometries.insert(make_pair(groupid, newExtraGeom)).first;
     it->second->_vgeometryinfos.resize(geometries.size());
     std::copy(geometries.begin(), geometries.end(), it->second->_vgeometryinfos.begin());
 }
